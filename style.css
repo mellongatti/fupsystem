@@ -43,7 +43,13 @@ body {
 
 .client-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; }
 .client-form label { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--muted); }
-.client-form input[type="text"], .client-form input[type="datetime-local"] { padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: #0c0f13; color: var(--text); }
+.client-form input[type="text"], .client-form input[type="date"] { padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: #0c0f13; color: var(--text); }
+ .client-form input[type="date"] { -webkit-appearance: none; appearance: none; color-scheme: dark; caret-color: var(--text); }
+ .client-form input[type="date"]::-webkit-datetime-edit { color: var(--text); background: transparent; }
+ .client-form input[type="date"]::-webkit-datetime-edit-year-field,
+ .client-form input[type="date"]::-webkit-datetime-edit-month-field,
+ .client-form input[type="date"]::-webkit-datetime-edit-day-field { color: var(--text); }
+ .client-form input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(80%); opacity: 0.8; }
 
 .toolbar { display: flex; gap: 8px; align-items: center; margin: 12px 0; }
 .toolbar input[type="search"] { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: #0c0f13; color: var(--text); }
@@ -78,15 +84,18 @@ body {
 .badge.nodate { color: var(--muted); background: #0c0f13; }
 
 .details .placeholder { color: var(--muted); }
-.details .header { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: end; }
-.details .header input[type="text"], .details .header input[type="datetime-local"] { padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: #0c0f13; color: var(--text); }
-.details .header .actions { display: flex; gap: 8px; align-items: center; }
-.details .header .actions .btn.small { padding: 4px 8px; min-width: 28px; }
-
-.notes { margin-top: 12px; }
-.notes h3 { margin: 0 0 8px 0; font-size: 14px; }
-.note-item { padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: #0c0f13; }
-.note-item .when { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.details .header { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; margin-bottom: 12px; }
+.details .header .actions { display: flex; gap: 10px; align-items: center; }
+.details .header input[type="text"], .details .header input[type="date"] { padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: #0c0f13; color: var(--text); }
+ .details .header input[type="date"] { -webkit-appearance: none; appearance: none; color-scheme: dark; caret-color: var(--text); }
+ .details .header input[type="date"]::-webkit-datetime-edit { color: var(--text); background: transparent; }
+ .details .header input[type="date"]::-webkit-datetime-edit-year-field,
+ .details .header input[type="date"]::-webkit-datetime-edit-month-field,
+ .details .header input[type="date"]::-webkit-datetime-edit-day-field { color: var(--text); }
+ .details .header input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(80%); opacity: 0.8; }
+.notes h3 { margin: 0 0 12px 0; font-size: 14px; }
+.note-item + .note-item { margin-top: 8px; }
+.note-new { margin-top: 12px; }
 .note-new { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: start; margin-top: 10px; }
 .note-new textarea { min-height: 80px; padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: #0c0f13; color: var(--text); }
 

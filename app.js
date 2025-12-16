@@ -152,10 +152,22 @@
   function uid(){
     return Math.random().toString(36).slice(2) + Date.now().toString(36);
   }
-  function parseDateTimeLocal(val){
+  function parseDate(val){
     if(!val) return null;
-    const t = Date.parse(val);
-    return Number.isNaN(t) ? null : t;
+    // Espera formato YYYY-MM-DD; cria data local no início do dia
+    const [yyyy, mm, dd] = val.split('-').map(Number);
+    if(!yyyy || !mm || !dd) return null;
+    const dt = new Date(yyyy, mm - 1, dd, 0, 0, 0, 0);
+    return dt.getTime();
+  }
+  function formatDate(ts){
+    if(ts == null) return 'Sem data';
+    const d = new Date(ts);
+    try {
+      return new Intl.DateTimeFormat('pt-BR', { dateStyle: 'medium' }).format(d);
+    } catch(e){
+      return d.toLocaleDateString('pt-BR');
+    }
   }
   function formatDateTime(ts){
     if(ts == null) return 'Sem data';
@@ -204,7 +216,7 @@
   async function onAddClient(e){
     e.preventDefault();
     const name = el.name.value.trim();
-    const next = parseDateTimeLocal(el.followup.value);
+    const next = parseDate(el.followup.value);
     if(!name){
       el.name.focus();
       return;
@@ -299,7 +311,7 @@
       title.textContent = c.name;
       const meta = document.createElement('div');
       meta.className = 'meta';
-      meta.textContent = c.nextFollowUp != null ? `Próximo: ${formatDateTime(c.nextFollowUp)}` : 'Sem próximo follow-up';
+      meta.textContent = c.nextFollowUp != null ? `Próximo: ${formatDate(c.nextFollowUp)}` : 'Sem próximo follow-up';
       left.appendChild(title);
       left.appendChild(meta);
 
@@ -348,8 +360,8 @@
 
     // Editable next follow-up
     const nextInput = document.createElement('input');
-    nextInput.type = 'datetime-local';
-    nextInput.value = client.nextFollowUp ? toDateTimeLocalValue(client.nextFollowUp) : '';
+    nextInput.type = 'date';
+    nextInput.value = client.nextFollowUp ? toDateInputValue(client.nextFollowUp) : '';
     const saveNextBtn = document.createElement('button');
     saveNextBtn.className = 'btn';
     saveNextBtn.textContent = 'Salvar follow-up';
@@ -364,10 +376,6 @@
     header.appendChild(nameInput);
     const actions = document.createElement('div');
 
-    const markDoneBtn = document.createElement('button');
-    markDoneBtn.className = 'btn';
-    markDoneBtn.textContent = 'Marcar como feito';
-
     const deleteClientBtn = document.createElement('button');
     deleteClientBtn.className = 'btn small danger';
     deleteClientBtn.textContent = '🗑';
@@ -377,12 +385,11 @@
     actions.className = 'actions';
     actions.appendChild(nextInput);
     actions.appendChild(saveNextBtn);
-    actions.appendChild(markDoneBtn);
     actions.appendChild(deleteClientBtn);
     header.appendChild(actions);
 
     saveNextBtn.addEventListener('click', async () => {
-      const parsed = parseDateTimeLocal(nextInput.value);
+      const parsed = parseDate(nextInput.value);
       client.nextFollowUp = parsed;
       save();
       try { await supabaseUpdateClient(client); } catch(e){ console.warn('Supabase update falhou', e); }
@@ -390,25 +397,6 @@
       renderDetails();
     });
 
-    markDoneBtn.addEventListener('click', async () => {
-      const defaultDays = 7;
-      const input = prompt('Em quantos dias deseja agendar o próximo follow-up? (padrão: 7)', String(defaultDays));
-      const days = Math.max(1, parseInt(input || String(defaultDays), 10) || defaultDays);
-      const msDay = 24*60*60*1000;
-      const base = client.nextFollowUp || Date.now();
-      client.nextFollowUp = base + days*msDay;
-      const noteText = `Follow-up concluído. Próximo em ${days} dia(s) — ${formatDateTime(client.nextFollowUp)}`;
-      client.notes = client.notes || [];
-      const note = { id: uid(), text: noteText, at: Date.now() };
-      client.notes.push(note);
-      save();
-      try {
-        await supabaseUpdateClient(client);
-        await supabaseInsertNote(client.id, note);
-      } catch(e){ console.warn('Supabase mark done falhou', e); }
-      renderAgenda();
-      renderDetails();
-    });
 
     deleteClientBtn.addEventListener('click', async () => {
       const ok = confirm(`Excluir o cliente "${client.name}" e todo o histórico?`);
@@ -482,15 +470,13 @@
     container.appendChild(notes);
   }
 
-  function toDateTimeLocalValue(ts){
+  function toDateInputValue(ts){
     const d = new Date(ts);
     const pad = n => String(n).padStart(2, '0');
     const yyyy = d.getFullYear();
     const mm = pad(d.getMonth()+1);
     const dd = pad(d.getDate());
-    const hh = pad(d.getHours());
-    const mi = pad(d.getMinutes());
-    return `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
+    return `${yyyy}-${mm}-${dd}`;
   }
 
   // Supabase data ops
