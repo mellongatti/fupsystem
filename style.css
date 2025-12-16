@@ -1,0 +1,96 @@
+* { box-sizing: border-box; }
+:root {
+  --bg: #0f1216;
+  --panel: #151922;
+  --text: #e7ecf3;
+  --muted: #a9b3c4;
+  --primary: #4f8cff;
+  --border: #273043;
+  --danger: #ff5a5f;
+  --warn: #ffb020;
+  --ok: #20c997;
+}
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  background: var(--bg);
+  color: var(--text);
+}
+
+.app-header, .app-footer {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.app-footer { border-top: 1px solid var(--border); border-bottom: none; }
+.app-header h1 { margin: 0; font-size: 20px; }
+.app-header .data-actions { margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+.app-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 16px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+.panel h2 { margin-top: 0; font-size: 16px; }
+
+.client-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; }
+.client-form label { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--muted); }
+.client-form input[type="text"], .client-form input[type="datetime-local"] { padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: #0c0f13; color: var(--text); }
+
+.toolbar { display: flex; gap: 8px; align-items: center; margin: 12px 0; }
+.toolbar input[type="search"] { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: #0c0f13; color: var(--text); }
+.filters { display: flex; gap: 6px; }
+
+.btn { padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border); background: #0c0f13; color: var(--text); cursor: pointer; }
+.btn.primary { background: var(--primary); border-color: transparent; color: white; }
+.btn.filter.active { background: var(--primary); border-color: transparent; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn.danger { background: var(--danger); border-color: transparent; color: white; }
+.btn.small { padding: 4px 8px; font-size: 12px; }
+
+.agenda-list { display: flex; flex-direction: column; gap: 8px; }
+.agenda-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #0c0f13;
+  cursor: pointer;
+}
+.agenda-item:hover { border-color: var(--primary); }
+.agenda-item .title { font-weight: 600; }
+.agenda-item .meta { font-size: 12px; color: var(--muted); }
+.badge { padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid var(--border); }
+.badge.overdue { color: white; background: #2d1314; border-color: #4a1c1e; }
+.badge.today { color: black; background: #ffe08a; border-color: #e3c467; }
+.badge.upcoming { color: white; background: #143026; border-color: #1e4a3a; }
+.badge.nodate { color: var(--muted); background: #0c0f13; }
+
+.details .placeholder { color: var(--muted); }
+.details .header { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: end; }
+.details .header input[type="text"], .details .header input[type="datetime-local"] { padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: #0c0f13; color: var(--text); }
+.details .header .actions { display: flex; gap: 8px; align-items: center; }
+.details .header .actions .btn.small { padding: 4px 8px; min-width: 28px; }
+
+.notes { margin-top: 12px; }
+.notes h3 { margin: 0 0 8px 0; font-size: 14px; }
+.note-item { padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: #0c0f13; }
+.note-item .when { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.note-new { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: start; margin-top: 10px; }
+.note-new textarea { min-height: 80px; padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: #0c0f13; color: var(--text); }
+
+@media (max-width: 900px) {
+  .app-layout { grid-template-columns: 1fr; }
+  .client-form { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agenda de Follow-up</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>Agenda de Follow-up</h1>
+    <div class="data-actions">
+      <button id="export-btn" class="btn">Exportar dados</button>
+      <button id="import-btn" class="btn">Importar dados</button>
+      <input id="import-file" type="file" accept="application/json" style="display:none" />
+    </div>
+  </header>
+
+  <main class="app-layout">
+    <section class="panel panel-left">
+      <h2>Cadastro de Cliente</h2>
+      <form id="client-form" class="client-form">
+        <label>
+          Empresa
+          <input type="text" id="company-name" placeholder="Nome da empresa" required />
+        </label>
+        <label>
+          Próximo follow-up
+          <input type="datetime-local" id="next-followup" />
+        </label>
+        <button type="submit" class="btn primary">Adicionar</button>
+      </form>
+
+      <div class="toolbar">
+        <input type="search" id="search" placeholder="Buscar por empresa" />
+        <div class="filters">
+          <button class="btn filter" data-filter="all">Todos</button>
+          <button class="btn filter" data-filter="today">Hoje</button>
+          <button class="btn filter" data-filter="week">Próx. 7 dias</button>
+          <button class="btn filter" data-filter="overdue">Atrasados</button>
+          <button class="btn filter" data-filter="nodate">Sem data</button>
+        </div>
+      </div>
+
+      <h2>Agenda</h2>
+      <div id="agenda-list" class="agenda-list" aria-live="polite"></div>
+    </section>
+
+    <section class="panel panel-right">
+      <h2>Detalhes do Cliente</h2>
+      <div id="details" class="details">
+        <div class="placeholder">Selecione um cliente na agenda para ver detalhes.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <small>Dados armazenados localmente neste navegador.</small>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
