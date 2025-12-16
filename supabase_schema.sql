@@ -53,6 +53,18 @@ create policy "Allow insert notes" on public.notes
   to anon
   with check (true);
 
+drop policy if exists "Allow delete clients" on public.clients;
+create policy "Allow delete clients" on public.clients
+  for delete
+  to anon
+  using (true);
+
+drop policy if exists "Allow delete notes" on public.notes;
+create policy "Allow delete notes" on public.notes
+  for delete
+  to anon
+  using (true);
+
 -- Opcional: permitir update de notas
 -- Se não quiser permitir edição de notas, remova as duas linhas abaixo.
 drop policy if exists "Allow update notes" on public.notes;

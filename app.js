@@ -420,7 +420,13 @@
     deleteClientBtn.addEventListener('click', async () => {
       const ok = confirm(`Excluir o cliente "${client.name}" e todo o histórico?`);
       if(!ok) return;
-      try { await supabaseDeleteClient(client.id); } catch(e){ console.warn('Supabase delete cliente falhou', e); }
+      try {
+        await supabaseDeleteClient(client.id);
+      } catch(e){
+        alert('Falha ao excluir no Supabase. Verifique permissões RLS.');
+        console.warn('Supabase delete cliente falhou', e);
+        return;
+      }
       clients = clients.filter(c => c.id !== client.id);
       save();
       if(selectedId === client.id) selectedId = null;
@@ -464,9 +470,15 @@
       del.addEventListener('click', async () => {
         const ok = confirm('Excluir esta nota?');
         if(!ok) return;
+        try {
+          await supabaseDeleteNote(n.id);
+        } catch(e){
+          alert('Falha ao excluir nota no Supabase. Verifique permissões RLS.');
+          console.warn('Supabase delete nota falhou', e);
+          return;
+        }
         client.notes = (client.notes || []).filter(nn => nn.id !== n.id);
         save();
-        try { await supabaseDeleteNote(n.id); } catch(e){ console.warn('Supabase delete nota falhou', e); }
         renderDetails();
       });
       actions.appendChild(del);
@@ -532,23 +544,33 @@
     save(); // cache local
   }
   async function supabaseUpsertClient(c){
-    if(!supabase) return;
-    await supabase.from('clients').upsert({ id: c.id, name: c.name, next_follow_up: c.nextFollowUp });
+    if(!supabase) return true;
+    const { error } = await supabase.from('clients').upsert({ id: c.id, name: c.name, next_follow_up: c.nextFollowUp });
+    if(error) throw error;
+    return true;
   }
   async function supabaseUpdateClient(c){
-    if(!supabase) return;
-    await supabase.from('clients').update({ name: c.name, next_follow_up: c.nextFollowUp }).eq('id', c.id);
+    if(!supabase) return true;
+    const { error } = await supabase.from('clients').update({ name: c.name, next_follow_up: c.nextFollowUp }).eq('id', c.id);
+    if(error) throw error;
+    return true;
   }
   async function supabaseInsertNote(clientId, note){
-    if(!supabase) return;
-    await supabase.from('notes').insert({ id: note.id, client_id: clientId, text: note.text, at: note.at });
+    if(!supabase) return true;
+    const { error } = await supabase.from('notes').insert({ id: note.id, client_id: clientId, text: note.text, at: note.at });
+    if(error) throw error;
+    return true;
   }
   async function supabaseDeleteClient(clientId){
-    if(!supabase) return;
-    await supabase.from('clients').delete().eq('id', clientId);
+    if(!supabase) return true;
+    const { error } = await supabase.from('clients').delete().eq('id', clientId);
+    if(error) throw error;
+    return true;
   }
   async function supabaseDeleteNote(noteId){
-    if(!supabase) return;
-    await supabase.from('notes').delete().eq('id', noteId);
+    if(!supabase) return true;
+    const { error } = await supabase.from('notes').delete().eq('id', noteId);
+    if(error) throw error;
+    return true;
   }
 })();
