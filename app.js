@@ -360,9 +360,10 @@
     nameInput.type = 'text';
     nameInput.value = client.name;
     nameInput.placeholder = 'Nome da empresa';
-    nameInput.addEventListener('change', () => {
+    nameInput.addEventListener('change', async () => {
       client.name = nameInput.value.trim() || client.name;
       save();
+      try { await supabaseUpdateClient(client); } catch(e){ console.warn('Supabase update falhou', e); }
       renderAgenda();
     });
 
