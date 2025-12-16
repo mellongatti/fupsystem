@@ -365,10 +365,12 @@
     const saveNextBtn = document.createElement('button');
     saveNextBtn.className = 'btn';
     saveNextBtn.textContent = 'Salvar follow-up';
-    saveNextBtn.addEventListener('click', () => {
-      const parsed = parseDateTimeLocal(nextInput.value);
+    // Uso único com data-only
+    saveNextBtn.addEventListener('click', async () => {
+      const parsed = parseDate(nextInput.value);
       client.nextFollowUp = parsed;
       save();
+      try { await supabaseUpdateClient(client); } catch(e){ console.warn('Supabase update falhou', e); }
       renderAgenda();
       renderDetails();
     });
