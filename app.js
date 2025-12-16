@@ -419,17 +419,29 @@
     notes.appendChild(h3);
 
     const list = document.createElement('div');
+    list.className = 'notes-list';
     (client.notes || []).slice().sort((a,b) => b.at - a.at).forEach(n => {
       const ni = document.createElement('div');
       ni.className = 'note-item';
+
+      const content = document.createElement('div');
+      content.className = 'content';
       const when = document.createElement('div');
       when.className = 'when';
       when.textContent = formatDateTime(n.at);
       const text = document.createElement('div');
+      text.className = 'text';
       text.textContent = n.text;
+      content.appendChild(when);
+      content.appendChild(text);
+
+      const actions = document.createElement('div');
+      actions.className = 'actions';
       const del = document.createElement('button');
       del.className = 'btn small danger';
-      del.textContent = 'Excluir';
+      del.textContent = '🗑';
+      del.title = 'Excluir nota';
+      del.setAttribute('aria-label', 'Excluir nota');
       del.addEventListener('click', async () => {
         const ok = confirm('Excluir esta nota?');
         if(!ok) return;
@@ -438,9 +450,10 @@
         try { await supabaseDeleteNote(n.id); } catch(e){ console.warn('Supabase delete nota falhou', e); }
         renderDetails();
       });
-      ni.appendChild(when);
-      ni.appendChild(text);
-      ni.appendChild(del);
+      actions.appendChild(del);
+
+      ni.appendChild(content);
+      ni.appendChild(actions);
       list.appendChild(ni);
     });
     notes.appendChild(list);

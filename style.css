@@ -94,7 +94,12 @@ body {
  .details .header input[type="date"]::-webkit-datetime-edit-day-field { color: var(--text); }
  .details .header input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(80%); opacity: 0.8; }
 .notes h3 { margin: 0 0 12px 0; font-size: 14px; }
-.note-item + .note-item { margin-top: 8px; }
+.notes .notes-list { display: flex; flex-direction: column; gap: 8px; }
+.notes .note-item { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: start; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: transparent; }
+.notes .note-item .content { display: flex; flex-direction: column; gap: 4px; }
+.notes .note-item .when { font-size: 12px; color: var(--muted); }
+.notes .note-item .actions { display: flex; align-items: center; }
+.notes .note-item .btn.small { width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; padding: 0; }
 .note-new { margin-top: 12px; }
 .note-new { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: start; margin-top: 10px; }
 .note-new textarea { min-height: 80px; padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: #0c0f13; color: var(--text); }
