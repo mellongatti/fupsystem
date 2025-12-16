@@ -73,9 +73,9 @@
     }
   }
 
-  // Supabase client (somente gravação silenciosa)
+  // Supabase client (leitura opcional; gravação silenciosa)
   const SUPABASE_URL = 'https://puvhtrotldejdcjpplzm.supabase.co';
-  const SUPABASE_ANON_KEY = '';// TODO: cole aqui sua Anon public key
+  const SUPABASE_ANON_KEY = 'sb_publishable_qNkXwL36Rohh0KCsl6m5qw_Tdqnfa5f';// chave anon preenchida
   let supabase = null;
   async function initSupabase(){
     if(window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY){
@@ -83,8 +83,16 @@
     } else {
       supabase = null;
     }
-    // Não carregamos dados do Supabase; apenas gravamos silenciosamente
-    clients = load();
+    try {
+      if(supabase){
+        await loadFromSupabase(); // carrega clientes e notas da nuvem
+      } else {
+        clients = load(); // fallback local
+      }
+    } catch(e){
+      console.warn('Falha ao carregar do Supabase, usando cache local', e);
+      clients = load();
+    }
     renderFilters();
     renderAgenda();
     renderDetails();
@@ -365,15 +373,6 @@
     const saveNextBtn = document.createElement('button');
     saveNextBtn.className = 'btn';
     saveNextBtn.textContent = 'Salvar follow-up';
-    // Uso único com data-only
-    saveNextBtn.addEventListener('click', async () => {
-      const parsed = parseDate(nextInput.value);
-      client.nextFollowUp = parsed;
-      save();
-      try { await supabaseUpdateClient(client); } catch(e){ console.warn('Supabase update falhou', e); }
-      renderAgenda();
-      renderDetails();
-    });
 
     header.appendChild(nameInput);
     const actions = document.createElement('div');
