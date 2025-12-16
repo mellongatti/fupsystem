@@ -108,3 +108,7 @@ body {
   .app-layout { grid-template-columns: 1fr; }
   .client-form { grid-template-columns: 1fr; }
 }
+/* Cloud status indicator */
+.cloud-status { margin-left: 8px; color: var(--muted); }
+.cloud-status.connected { color: var(--ok); }
+.cloud-status.offline { color: var(--warn); }

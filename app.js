@@ -19,6 +19,7 @@
     exportBtn: null,
     importBtn: null,
     importFile: null,
+    cloudStatus: null,
   };
 
   document.addEventListener('DOMContentLoaded', init);
@@ -35,6 +36,7 @@
     el.exportBtn = document.getElementById('export-btn');
     el.importBtn = document.getElementById('import-btn');
     el.importFile = document.getElementById('import-file');
+    el.cloudStatus = document.getElementById('cloud-status');
 
     // Events
     el.form.addEventListener('submit', onAddClient);
@@ -72,6 +74,18 @@
       console.error('Erro ao salvar dados', e);
     }
   }
+  function setCloudStatus(connected){
+    if(!el.cloudStatus) return;
+    if(connected === true){
+      el.cloudStatus.textContent = 'Conectado ao Supabase';
+      el.cloudStatus.classList.add('connected');
+      el.cloudStatus.classList.remove('offline');
+    } else {
+      el.cloudStatus.textContent = 'Offline (cache local)';
+      el.cloudStatus.classList.add('offline');
+      el.cloudStatus.classList.remove('connected');
+    }
+  }
 
   // Supabase client (leitura opcional; gravação silenciosa)
   const SUPABASE_URL = 'https://puvhtrotldejdcjpplzm.supabase.co';
@@ -86,12 +100,15 @@
     try {
       if(supabase){
         await loadFromSupabase(); // carrega clientes e notas da nuvem
+        setCloudStatus(true);
       } else {
         clients = load(); // fallback local
+        setCloudStatus(false);
       }
     } catch(e){
       console.warn('Falha ao carregar do Supabase, usando cache local', e);
       clients = load();
+      setCloudStatus(false);
     }
     renderFilters();
     renderAgenda();
